@@ -25,35 +25,26 @@ class ViewController: UIViewController {
 		super.viewDidLoad()
 		setupSliders()
 		setupLabels()
+		setPaletteView()
 	}
-	
-	override func viewDidLayoutSubviews() {
-		paletteView.layer.cornerRadius = 16
-		paletteView.layer.borderColor = UIColor.gray.cgColor
-		paletteView.layer.borderWidth = 1
-		setPaletteBackground()
-	}
-	
 	
 	// MARK: - IB Actions
-	@IBAction func redSliderChanged() {
-		redValueLabel.text = String(format: "%.2f", redSlider.value)
+	@IBAction func sliderValueChanged(_ sender: UISlider) {
+		switch sender.tag {
+		case 0:
+			redValueLabel.text = String(format: "%.2f", redSlider.value)
+		case 1:
+			greenValueLabel.text = String(format: "%.2f", greenSlider.value)
+		default:
+			blueValueLabel.text = String(format: "%.2f", blueSlider.value)
+		}
 		setPaletteBackground()
 	}
 	
-	@IBAction func greenSliderChanged() {
-		greenValueLabel.text = String(format: "%.2f", greenSlider.value)
-		setPaletteBackground()
-	}
-	
-	@IBAction func blueSliderChanged() {
-		blueValueLabel.text = String(format: "%.2f", blueSlider.value)
-		setPaletteBackground()
-	}
 	
 	// MARK: - Private Methods
 	private func setPaletteBackground() {
-		paletteView.backgroundColor = .init(
+		paletteView.backgroundColor = UIColor.init(
 			red: CGFloat(redSlider.value),
 			green: CGFloat(greenSlider.value),
 			blue: CGFloat(blueSlider.value),
@@ -73,5 +64,11 @@ class ViewController: UIViewController {
 		blueValueLabel.text = String(format: "%.2f", blueSlider.value)
 	}
 	
+	private func setPaletteView() {
+		paletteView.layer.cornerRadius = 16
+		paletteView.layer.borderColor = UIColor.gray.cgColor
+		paletteView.layer.borderWidth = 1
+		setPaletteBackground()
+	}
 }
 
