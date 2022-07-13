@@ -8,9 +8,7 @@
 import UIKit
 
 protocol SettingsViewControllerDelegate {
-	
 	func setBackground(_ color: UIColor)
-	
 }
 
 class MainViewController: UIViewController {

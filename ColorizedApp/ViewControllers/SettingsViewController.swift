@@ -39,16 +39,14 @@ class SettingsViewController: UIViewController {
 	
 	// MARK: - IB Actions
 	@IBAction func sliderValueChanged() {
-		backgroundColor = UIColor(
-			red: CGFloat(redSlider.value),
-			green: CGFloat(greenSlider.value),
-			blue: CGFloat(blueSlider.value),
-			alpha: 1
+		updateBackground(
+			red: redSlider.value,
+			green: greenSlider.value,
+			blue: blueSlider.value
 		)
-		updateUI()
 	}
 	
-	@IBAction func doneButtonTapped() {
+	@IBAction func doneButtonPressed() {
 		delegate.setBackground(backgroundColor)
 		dismiss(animated: true)
 	}
@@ -65,6 +63,17 @@ extension SettingsViewController {
 
 // MARK: - Private Methods
 extension SettingsViewController {
+	
+	private func updateBackground(red: Float, green: Float, blue: Float) {
+		backgroundColor = UIColor(
+			red: CGFloat(red),
+			green: CGFloat(green),
+			blue: CGFloat(blue),
+			alpha: 1
+		)
+		updateUI()
+	}
+	
 	private func updateUI() {
 		updateLabels()
 		updateSliders()
@@ -79,9 +88,9 @@ extension SettingsViewController {
 	}
 	
 	private func updateSliders() {
-		redSlider.value = Float(backgroundColor.getRgb().red)
-		greenSlider.value = Float(backgroundColor.getRgb().green)
-		blueSlider.value = Float(backgroundColor.getRgb().blue)
+		redSlider.setValue(Float(backgroundColor.getRgb().red), animated: true)
+		greenSlider.setValue(Float(backgroundColor.getRgb().green), animated: true)
+		blueSlider.setValue(Float(backgroundColor.getRgb().blue), animated: true)
 	}
 	
 	private func updateTextFields() {
@@ -100,7 +109,7 @@ extension SettingsViewController {
 		paletteView.layer.borderWidth = 1
 	}
 	
-	private func setupToolbar() {
+	private func setKeyboardToolbar() {
 		let bar = UIToolbar()
 		bar.items = [
 			UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
@@ -117,16 +126,28 @@ extension SettingsViewController {
 		for textField in [redTextField, greenTextField, blueTextField] {
 			textField?.delegate = self
 		}
-		
-		setupToolbar()
+		setKeyboardToolbar()
 	}
-
+	
 }
 
+// MARK: - UITextFieldDelegate
 extension SettingsViewController: UITextFieldDelegate {
 	
 	func textFieldDidEndEditing(_ textField: UITextField) {
+		guard let value = Float(textField.text ?? "") else {
+			updateTextFields()
+			return
+		}
+		guard (0.0...1.0).contains(value) else {
+			updateTextFields()
+			return
+		}
 		
+		let red = Float(redTextField.text ?? "") ?? 0
+		let green = Float(greenTextField.text ?? "") ?? 0
+		let blue = Float(blueTextField.text ?? "") ?? 0
+		updateBackground(red: red, green: green, blue: blue)
 	}
 	
 }
